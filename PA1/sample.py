@@ -81,9 +81,13 @@ start_ids = encode(start)
 x = (torch.tensor(start_ids, dtype=torch.long, device=device)[None, ...])
 
 # run generation
+import time
+inf_start_time = time.time_ns() // 1000
 with torch.no_grad():
     with ctx:
         for k in range(num_samples):
             y = model.generate(x, max_new_tokens, temperature=temperature, top_k=top_k)
             print(decode(y[0].tolist()))
             print('---------------')
+inf_end_time = time.time_ns() // 1000
+print(f"Time taken for inference: {(inf_end_time-inf_start_time) / 1_000_000} seconds")
